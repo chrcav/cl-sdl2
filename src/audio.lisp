@@ -80,4 +80,43 @@
   (loop for i below (sdl-get-num-audio-devices 0)
 	collect (sdl-get-audio-device-name i 0)))
 
+(define-struct-accessors (audio-spec sdl2-ffi:sdl-audio-spec)
+  :freq :format :channels :samples :callback :userdata)
+
+(defun open-audio-device (freq format channels samples
+			  &key
+			    (device)
+			    (callback)
+			    (user-data)
+			    (allowed-changes '()))
+  "Opens audio device. Specify device if you need a particular one.
+Returns device-id and actual values for freq format channels and samples.
+allowed-changes should be a list with some combination of :frequency-change :format-change :channels-change :any-change
+SDL will convert between requested and actual format on the fly, when changes are not allowed."
+  (c-with ((desired sdl2-ffi:sdl-audio-spec)
+	   (obtained sdl2-ffi:sdl-audio-spec))
+    (setf (audio-spec-freq desired) freq
+	  (audio-spec-format desired) (autowrap:enum-value 'sdl-audio format)
+	  (audio-spec-channels desired) channels
+	  (audio-spec-samples desired) samples
+	  (audio-spec-callback desired) (if callback (callback callback)
+					    (cffi:null-pointer))
+	  (audio-spec-userdata desired) (if user-data user-data
+					    (cffi:null-pointer)))
+    (let ((device (sdl-open-audio-device
+		   (if device device
+		       (cffi:null-pointer))
+		   0
+		   desired
+		   obtained
+		   (autowrap:mask-apply 'sdl-audio-allow allowed-changes))))
+      (check-zero device)
+      (values device
+	      (audio-spec-freq obtained)
+	      (autowrap:enum-key 'sdl-audio (audio-spec-format obtained))
+	      (audio-spec-channels obtained)
+	      (audio-spec-samples obtained)))))
+
+(defun close-audio-device (device)
+  (sdl-close-audio-device device))
 ;; TODO, everything else. :)
