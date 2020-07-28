@@ -165,13 +165,22 @@ SDL will convert between requested and actual format on the fly, when changes ar
 (defun get-queued-audio-size (device)
   (sdl-get-queued-audio-size device))
 
-(defun queue-audio (device data)
-  "Queues data onto device. Data is copied."
+(defun %queue-audio (device data offset count)
   (cffi:with-pointer-to-vector-data (ptr data)
-    (sdl-queue-audio device ptr
-		     (* (length data)
+    (sdl-queue-audio device (cffi:incf-pointer ptr offset)
+		     (* count
 			(cffi:foreign-type-size
 			 (array-type-to-foreign-type data))))))
+
+(defun queue-audio (device data)
+  "Queues data onto device. Data is copied."
+  (multiple-value-bind (displaced-to displaced-index-offset)
+      (array-displacement data)
+    (%queue-audio device
+                  (if displaced-to
+                      displaced-to
+                      data)
+                  displaced-index-offset (length data))))
 
 ;; TODO: implement dequeue-audio
 
