@@ -141,4 +141,28 @@ SDL will convert between requested and actual format on the fly, when changes ar
 		     ,@body)
 	   (unlock-audio-device ,dev-id)))))
 
+(defun array-type-to-foreign-type (data)
+  (declare (inline))
+  (let ((type (array-element-type data)))
+    (if (eq type 'single-float)
+	:float
+	(destructuring-bind (signedness length)
+	    type
+	  (declare (ignore signedness))
+	  (case length
+	    (8 :uint8)
+	    (16 :uint16)
+	    (32 :uint32))))))
+
+(defun get-queued-audio-size (device)
+  (sdl-get-queued-audio-size device))
+
+(defun queue-audio (device data)
+  "Queues data onto device. Data is copied."
+  (cffi:with-pointer-to-vector-data (ptr data)
+    (sdl-queue-audio device ptr
+		     (* (length data)
+			(cffi:foreign-type-size
+			 (array-type-to-foreign-type data))))))
+
 ;; TODO, everything else. :)
