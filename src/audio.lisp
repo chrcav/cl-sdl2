@@ -125,4 +125,20 @@ SDL will convert between requested and actual format on the fly, when changes ar
 
 (defun unpause-audio-device (device)
   (sdl-pause-audio-device device 0))
+
+(defun lock-audio-device (device)
+  "Prevents audio device callback from running for the duration of lock"
+  (sdl-lock-audio-device device))
+
+(defun unlock-audio-device (device)
+  (sdl-unlock-audio-device device))
+
+(defmacro with-audio-device-lock ((device) &body body)
+  (with-gensyms (dev-id)
+    `(let ((,dev-id ,device))
+	 (unwind-protect
+	      (progn (lock-audio-device ,dev-id)
+		     ,@body)
+	   (unlock-audio-device ,dev-id)))))
+
 ;; TODO, everything else. :)
