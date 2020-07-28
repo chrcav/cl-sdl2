@@ -30,7 +30,7 @@
   sdl2-ffi:+audio-s32sys+
   sdl2-ffi:+audio-f32sys+)
 
-(autowrap:define-enum-from-constants (sdl-audio-allow)
+(autowrap:define-bitmask-from-constants (sdl-audio-allow)
   sdl2-ffi:+sdl-audio-allow-frequency-change+
   sdl2-ffi:+sdl-audio-allow-format-change+
   sdl2-ffi:+sdl-audio-allow-channels-change+
