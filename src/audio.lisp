@@ -58,4 +58,12 @@
 (defun audio-unsigned-p (x)
   (not (audio-signed-p x)))
 
+(defun audio-init (driver-name)
+  "Use this only if you need a specific audio driver."
+  (check-rc (sdl-audio-init (symbol-name driver-name))))
+
+(defun audio-quit ()
+  "Use this function to shut down audio if you initialized it with audio-init"
+  (sdl-audio-quit))
+
 ;; TODO, everything else. :)
