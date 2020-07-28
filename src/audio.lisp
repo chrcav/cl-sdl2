@@ -119,4 +119,10 @@ SDL will convert between requested and actual format on the fly, when changes ar
 
 (defun close-audio-device (device)
   (sdl-close-audio-device device))
+
+(defun pause-audio-device (device)
+  (sdl-pause-audio-device device 1))
+
+(defun unpause-audio-device (device)
+  (sdl-pause-audio-device device 0))
 ;; TODO, everything else. :)
