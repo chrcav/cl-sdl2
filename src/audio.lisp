@@ -66,4 +66,18 @@
   "Use this function to shut down audio if you initialized it with audio-init"
   (sdl-audio-quit))
 
+(defun get-current-audio-driver ()
+  (let ((driver (sdl-get-current-audio-driver)))
+    (when driver
+      (make-keyword (string-upcase driver)))))
+
+(defun audio-drivers ()
+  "Returns a list of audio drivers present in system"
+  (loop for i below (sdl-get-num-audio-drivers)
+	collect (make-keyword (string-upcase (sdl-get-audio-driver i)))))
+
+(defun audio-devices ()
+  (loop for i below (sdl-get-num-audio-devices 0)
+	collect (sdl-get-audio-device-name i 0)))
+
 ;; TODO, everything else. :)
