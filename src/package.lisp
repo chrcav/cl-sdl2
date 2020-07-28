@@ -407,4 +407,5 @@
         #:alexandria
         #:cffi)
   (:export #:basic-test
-           #:renderer-test))
+           #:renderer-test
+           #:audio-queue-example))
