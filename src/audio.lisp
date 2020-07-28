@@ -83,6 +83,14 @@
 (define-struct-accessors (audio-spec sdl2-ffi:sdl-audio-spec)
   :freq :format :channels :samples :callback :userdata)
 
+;;; TODO: audio callbacks
+;;; Something like this macro, maybe?
+;; (defmacro def-audio-callback (name (userdata-name stream-name length-name)
+;; 			      &body body)
+;;   (progn
+;;     `(defcallback ,name :void ((,userdata-name :pointer) (,stream-name :pointer :uint8) (,length-name :int))
+;;        ,@body)))
+
 (defun open-audio-device (freq format channels samples
 			  &key
 			    (device)
@@ -164,5 +172,7 @@ SDL will convert between requested and actual format on the fly, when changes ar
 		     (* (length data)
 			(cffi:foreign-type-size
 			 (array-type-to-foreign-type data))))))
+
+;; TODO: implement dequeue-audio
 
 ;; TODO, everything else. :)
