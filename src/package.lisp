@@ -322,6 +322,22 @@
    :rw-from-file
    :rw-close
 
+   ;; audio.lisp
+   #:audio-init
+   #:audio-quit
+   #:get-current-audio-driver
+   #:audio-drivers
+   #:audio-devices
+   #:open-audio-device
+   #:close-audio-device
+   #:pause-audio-device
+   #:unpause-audio-device
+   #:lock-audio-device
+   #:unlock-audio-device
+   #:with-audio-device-lock
+   #:get-queued-audio-size
+   #:queue-audio
+
    ;; Utility
    #:sdl-ptr
 
@@ -416,4 +432,5 @@
         #:alexandria
         #:cffi)
   (:export #:basic-test
-           #:renderer-test))
+           #:renderer-test
+           #:audio-queue-example))

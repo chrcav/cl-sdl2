@@ -64,4 +64,5 @@
   :pathname "examples"
   :serial t
   :components ((:file "basic")
+	       (:file "audio")
                (:file "renderer")))
